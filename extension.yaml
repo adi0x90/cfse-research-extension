@@ -1,0 +1,20 @@
+cfse_extension:
+  name: "research"
+  extension_version: "0.1.0"
+  cfse_spec_version: "1.0.0"
+  status: "draft"
+
+  intent: >
+    Represent research progress, provenance, and coordination metadata using CFSE artifacts,
+    while keeping all research-specific structure namespaced under extensions.research.
+
+  adds:
+    extension_fields:
+      - artifact: "Finding"
+        field_root: "extensions.research"
+
+  invariants:
+    - "Does not modify CFSE core semantics."
+    - "Does not modify or weaken cfse-math semantics."
+    - "Math truth status remains SSOT at extensions.math.status (Invariant artifacts)."
+    - "Research workflow state remains SSOT at extensions.research.state (Finding artifacts)."

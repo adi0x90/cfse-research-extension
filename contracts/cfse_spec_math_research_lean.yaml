@@ -1,0 +1,470 @@
+contract_version: "1.0.0"
+domain: "cfse"
+domain_version: "spec-2026-01-25"
+
+types:
+  Concept:
+    description: "CFSE Concept (C-*)"
+    properties:
+      id: { type: string, required: true, indexed: [exact, fulltext], normalize: [trim] }
+      name: { type: string, indexed: [fulltext], normalize: [trim] }
+      promise: { type: string, indexed: [fulltext] }
+      attributes: { type: array }
+      entry_points: { type: array }
+      invariants: { type: array }
+      status: { type: string, indexed: [exact], normalize: [trim] }
+      version: { type: string, indexed: [exact], normalize: [trim] }
+      body: { type: string }
+      md_bracket_refs: { type: array }
+      md_backtick_mentions: { type: array }
+    searchable: [_id, name, promise, body, md_bracket_refs.*, md_backtick_mentions.*]
+
+  EntryPoint:
+    description: "CFSE Entry Point (EP-*)"
+    properties:
+      id: { type: string, required: true, indexed: [exact, fulltext], normalize: [trim] }
+      title: { type: string, indexed: [fulltext], normalize: [trim] }
+      owner_concept: { type: string, indexed: [exact], normalize: [trim] }
+      method: { type: string, indexed: [exact], normalize: [trim] }
+      path: { type: string, indexed: [fulltext], normalize: [trim] }
+      action: { type: string, indexed: [exact], normalize: [trim] }
+      parameters: { type: array }
+      tangible_locations: { type: array }
+      exposes: { type: array }
+      governed_by_invariants: { type: array }
+      status: { type: string, indexed: [exact], normalize: [trim] }
+      version: { type: string, indexed: [exact], normalize: [trim] }
+      body: { type: string }
+      md_bracket_refs: { type: array }
+      md_backtick_mentions: { type: array }
+    searchable: [_id, title, path, body, md_bracket_refs.*, md_backtick_mentions.*]
+
+  Interaction:
+    description: "CFSE Interaction (I-*)"
+    properties:
+      id: { type: string, required: true, indexed: [exact, fulltext], normalize: [trim] }
+      name: { type: string, indexed: [fulltext], normalize: [trim] }
+      from_concept: { type: string, indexed: [exact], normalize: [trim] }
+      to_concept: { type: string, indexed: [exact], normalize: [trim] }
+      action: { type: string, indexed: [exact], normalize: [trim] }
+      entry_points: { type: array }
+      pre_invariants: { type: array }
+      post_invariants: { type: array }
+      data_flow: { type: array }
+      error_responses: { type: array }
+      status: { type: string, indexed: [exact], normalize: [trim] }
+      version: { type: string, indexed: [exact], normalize: [trim] }
+      body: { type: string }
+      md_bracket_refs: { type: array }
+      md_backtick_mentions: { type: array }
+    searchable: [_id, name, body, md_bracket_refs.*, md_backtick_mentions.*]
+
+  Flow:
+    description: "CFSE Flow (F-*)"
+    properties:
+      id: { type: string, required: true, indexed: [exact, fulltext], normalize: [trim] }
+      name: { type: string, indexed: [fulltext], normalize: [trim] }
+      actor: { type: string, indexed: [fulltext], normalize: [trim] }
+      goal: { type: string, indexed: [fulltext] }
+      trigger: { type: object }
+      preconditions: { type: array }
+      steps: { type: array }
+      postconditions: { type: array }
+      variants: { type: array }
+      state_map: { type: object }
+      status: { type: string, indexed: [exact], normalize: [trim] }
+      version: { type: string, indexed: [exact], normalize: [trim] }
+      body: { type: string }
+      md_bracket_refs: { type: array }
+      md_backtick_mentions: { type: array }
+    searchable: [_id, name, goal, body, md_bracket_refs.*, md_backtick_mentions.*]
+
+  FlowStep:
+    description: "Derived Flow Step node (Flow-scoped, stable id)"
+    properties:
+      id: { type: string, required: true, indexed: [exact], normalize: [trim] }
+      flow: { type: string, indexed: [exact], normalize: [trim] }
+      variant: { type: string, indexed: [exact], normalize: [trim] }
+      order: { type: int, indexed: [exact] }
+      actor: { type: string, indexed: [fulltext], normalize: [trim] }
+      interaction: { type: string, indexed: [exact], normalize: [trim] }
+      purpose: { type: string, indexed: [fulltext] }
+      pre: { type: array }
+      post: { type: array }
+      conditional: { type: string, indexed: [fulltext] }
+      on_success: { type: int, indexed: [exact] }
+      on_failure: { type: string, indexed: [exact], normalize: [trim] }
+      compensation: { type: string, indexed: [exact], normalize: [trim] }
+      notes: { type: string, indexed: [fulltext] }
+    searchable: [_id, flow, variant, actor, interaction, purpose, notes, pre.*, post.*]
+
+  FlowVariant:
+    description: "Derived Flow Variant node (Flow-scoped, keyed by name)"
+    properties:
+      id: { type: string, required: true, indexed: [exact], normalize: [trim] }
+      flow: { type: string, indexed: [exact], normalize: [trim] }
+      name: { type: string, indexed: [exact, fulltext], normalize: [trim] }
+      condition: { type: string, indexed: [fulltext] }
+      replaces: { type: array }
+      inserts_before: { type: int, indexed: [exact] }
+      inserts_after: { type: int, indexed: [exact] }
+      steps: { type: array }
+      postconditions: { type: array }
+    searchable: [_id, flow, name, condition]
+
+  FlowCondition:
+    description: "Derived Flow Condition node (graphified pre/postconditions)"
+    properties:
+      id: { type: string, required: true, indexed: [exact], normalize: [trim] }
+      flow: { type: string, indexed: [exact], normalize: [trim] }
+      owner: { type: string, indexed: [exact], normalize: [trim] }
+      phase: { type: string, indexed: [exact], normalize: [trim] }
+      type: { type: string, indexed: [exact], normalize: [trim] }
+      description: { type: string, indexed: [fulltext] }
+      expression: { type: string, indexed: [fulltext] }
+      invariant: { type: string, indexed: [exact], normalize: [trim] }
+      concept: { type: string, indexed: [exact], normalize: [trim] }
+      state: { type: string, indexed: [exact], normalize: [trim] }
+      attribute: { type: string, indexed: [exact], normalize: [trim] }
+      value: { type: string, indexed: [fulltext] }
+    searchable: [_id, flow, owner, phase, type, description, expression, invariant, concept, state, attribute, value]
+
+  FlowStateMap:
+    description: "Derived Flow State Map (graphified state_map)"
+    properties:
+      id: { type: string, required: true, indexed: [exact], normalize: [trim] }
+      flow: { type: string, indexed: [exact], normalize: [trim] }
+      concept: { type: string, indexed: [exact], normalize: [trim] }
+    searchable: [_id, flow, concept]
+
+  FlowState:
+    description: "Derived Flow State (flow-scoped state value)"
+    properties:
+      id: { type: string, required: true, indexed: [exact], normalize: [trim] }
+      flow: { type: string, indexed: [exact], normalize: [trim] }
+      concept: { type: string, indexed: [exact], normalize: [trim] }
+      value: { type: string, indexed: [exact, fulltext], normalize: [trim] }
+    searchable: [_id, flow, concept, value]
+
+  FlowStateTransition:
+    description: "Derived Flow State Transition (flow-scoped, stable id)"
+    properties:
+      id: { type: string, required: true, indexed: [exact], normalize: [trim] }
+      flow: { type: string, indexed: [exact], normalize: [trim] }
+      from: { type: string, indexed: [exact], normalize: [trim] }
+      to: { type: string, indexed: [exact], normalize: [trim] }
+      step: { type: int, indexed: [exact] }
+      interaction: { type: string, indexed: [exact], normalize: [trim] }
+      effective_interaction: { type: string, indexed: [exact], normalize: [trim] }
+      guard: { type: string, indexed: [exact], normalize: [trim] }
+    searchable: [_id, flow, from, to, interaction, effective_interaction, guard]
+
+  Predicate:
+    description: "CFSE Predicate (P-*)"
+    properties:
+      id: { type: string, required: true, indexed: [exact, fulltext], normalize: [trim] }
+      name: { type: string, indexed: [fulltext], normalize: [trim] }
+      parameters: { type: array }
+      returns: { type: string, indexed: [exact], normalize: [trim] }
+      definition: { type: string, indexed: [fulltext] }
+      extensions: { type: object }
+      body: { type: string }
+    searchable:
+      - _id
+      - name
+      - definition
+      - body
+      # math extension searchable paths
+      - extensions.math.formal_statement
+      - extensions.math.verification_method
+      - extensions.math.domain
+      - extensions.math.notes
+      # lean extension searchable paths
+      - extensions.lean.bindings.*.binding_id
+      - extensions.lean.bindings.*.project_root
+      - extensions.lean.bindings.*.module
+      - extensions.lean.bindings.*.decl
+      - extensions.lean.bindings.*.kind
+      - extensions.lean.bindings.*.fail_on_sorry
+      - extensions.lean.verification.status
+      - extensions.lean.verification.last_run_id
+      - extensions.lean.verification.last_verified_at
+      - extensions.lean.verification.notes
+
+  Invariant:
+    description: "CFSE Invariant (INV-*)"
+    properties:
+      id: { type: string, required: true, indexed: [exact, fulltext], normalize: [trim] }
+      rule: { type: string, indexed: [fulltext] }
+      logic: { type: string, indexed: [fulltext] }
+      predicates: { type: array }
+      dependencies: { type: array }
+      criticality: { type: string, indexed: [exact], normalize: [trim] }
+      tags: { type: array, indexed: [tags] }
+      status: { type: string, indexed: [exact], normalize: [trim] }
+      extensions: { type: object }
+      body: { type: string }
+    searchable:
+      - _id
+      - rule
+      - logic
+      - tags.*
+      - body
+      # math extension searchable paths
+      - extensions.math.name
+      - extensions.math.formal_statement
+      - extensions.math.source
+      - extensions.math.status
+      - extensions.math.difficulty_signals.*
+      - extensions.math.notes
+      # lean extension searchable paths
+      - extensions.lean.bindings.*.binding_id
+      - extensions.lean.bindings.*.project_root
+      - extensions.lean.bindings.*.module
+      - extensions.lean.bindings.*.decl
+      - extensions.lean.bindings.*.kind
+      - extensions.lean.bindings.*.fail_on_sorry
+      - extensions.lean.verification.status
+      - extensions.lean.verification.last_run_id
+      - extensions.lean.verification.last_verified_at
+      - extensions.lean.verification.notes
+
+  Scenario:
+    description: "CFSE Scenario (S-*)"
+    properties:
+      id: { type: string, required: true, indexed: [exact, fulltext], normalize: [trim] }
+      title: { type: string, indexed: [fulltext], normalize: [trim] }
+      hypothesis: { type: string, indexed: [fulltext] }
+      targeted_invariants: { type: array }
+      targeted_concepts: { type: array }
+      targeted_interactions: { type: array }
+      targeted_flows: { type: array }
+      attack_vector: { type: object }
+      expected_outcome: { type: object }
+      generator: { type: object }
+      status: { type: string, indexed: [exact], normalize: [trim] }
+      version: { type: string, indexed: [exact], normalize: [trim] }
+      body: { type: string }
+      md_bracket_refs: { type: array }
+      md_backtick_mentions: { type: array }
+    searchable: [_id, title, hypothesis, body, md_bracket_refs.*, md_backtick_mentions.*]
+
+  Exploration:
+    description: "CFSE Exploration (E-*)"
+    properties:
+      id: { type: string, required: true, indexed: [exact, fulltext], normalize: [trim] }
+      title: { type: string, indexed: [fulltext], normalize: [trim] }
+      scenario_ref: { type: object }
+      objective: { type: string, indexed: [fulltext] }
+      trace_refs: { type: object }
+      verdict: { type: string, indexed: [exact], normalize: [trim] }
+      observations: { type: object }
+      status: { type: string, indexed: [exact], normalize: [trim] }
+      version: { type: string, indexed: [exact], normalize: [trim] }
+      body: { type: string }
+      md_bracket_refs: { type: array }
+      md_backtick_mentions: { type: array }
+    searchable: [_id, title, objective, verdict, body, md_bracket_refs.*, md_backtick_mentions.*]
+
+  Trace:
+    description: "CFSE Trace (T-*)"
+    properties:
+      id: { type: string, required: true, indexed: [exact, fulltext], normalize: [trim] }
+      title: { type: string, indexed: [fulltext], normalize: [trim] }
+      exploration_ref: { type: string, indexed: [exact], normalize: [trim] }
+      scenario_ref: { type: string, indexed: [exact], normalize: [trim] }
+      path: { type: string, indexed: [exact], normalize: [trim] }
+      steps: { type: array }
+      status: { type: string, indexed: [exact], normalize: [trim] }
+      version: { type: string, indexed: [exact], normalize: [trim] }
+      body: { type: string }
+      md_bracket_refs: { type: array }
+      md_backtick_mentions: { type: array }
+    searchable: [_id, title, body, md_bracket_refs.*, md_backtick_mentions.*]
+
+  NldRunSummary:
+    description: "NLD run summary JSON (results/cfse/*/summary.json)"
+    properties:
+      id: { type: string, required: true, indexed: [exact], normalize: [trim] }
+      path: { type: string, indexed: [exact], normalize: [trim] }
+      run_kind: { type: string, indexed: [exact], normalize: [trim] }
+      invariant: { type: string, indexed: [exact], normalize: [trim] }
+      verdict: { type: string, indexed: [exact], normalize: [trim] }
+    searchable: [_id, path, invariant, verdict]
+
+  NldModelCheckMinimized:
+    description: "NLD model-check minimization report (results/cfse/model_check/minimized.json)"
+    properties:
+      id: { type: string, required: true, indexed: [exact], normalize: [trim] }
+      path: { type: string, indexed: [exact], normalize: [trim] }
+      invariant_id: { type: string, indexed: [exact], normalize: [trim] }
+      input_trace: { type: string }
+      output_trace: { type: string }
+      original_len: { type: int }
+      minimized_len: { type: int }
+    searchable: [_id, path, invariant_id]
+
+  NldModelCheckClosure:
+    description: "NLD model-check closure loop report (results/cfse/model_check/closure.json)"
+    properties:
+      id: { type: string, required: true, indexed: [exact], normalize: [trim] }
+      path: { type: string, indexed: [exact], normalize: [trim] }
+      invariant: { type: string, indexed: [exact], normalize: [trim] }
+      model_check_rc: { type: int }
+      model_check_trace: { type: string }
+      minimized_trace: { type: string }
+      model_confirm_rc: { type: int }
+      confirmed_trace: { type: string }
+      rc: { type: int }
+    searchable: [_id, path, invariant]
+
+  Finding:
+    description: "CFSE Finding (FD-*)"
+    properties:
+      id: { type: string, required: true, indexed: [exact, fulltext], normalize: [trim] }
+      title: { type: string, indexed: [fulltext], normalize: [trim] }
+      severity: { type: string, indexed: [exact], normalize: [trim] }
+      description: { type: string, indexed: [fulltext] }
+      evidence: { type: array }
+      violated_invariants: { type: array }
+      remediation: { type: object }
+      affected_components: { type: object }
+      traceability: { type: object }
+      status: { type: string, indexed: [exact], normalize: [trim] }
+      version: { type: string, indexed: [exact], normalize: [trim] }
+      extensions: { type: object }
+      body: { type: string }
+      md_bracket_refs: { type: array }
+      md_backtick_mentions: { type: array }
+    searchable:
+      - _id
+      - title
+      - description
+      - body
+      - md_bracket_refs.*
+      - md_backtick_mentions.*
+      # math extension searchable paths (useful for CIL/snippet layers)
+      - extensions.math.kind
+      - extensions.math.layer
+      - extensions.math.question
+      - extensions.math.date
+      - extensions.math.direction
+      - extensions.math.assumption_profile
+      - extensions.math.assumptions.*
+      - extensions.math.source
+      - extensions.math.source_cmd
+      # optional evidence payload (computational / empirical summaries)
+      - extensions.math.evidence.*
+      - extensions.math.supports_invariants.*
+      - extensions.math.refutes_invariants.*
+      - extensions.math.notes
+      # research extension searchable paths (provenance + progress)
+      - extensions.research.workspace
+      - extensions.research.question
+      - extensions.research.questions.*
+      - extensions.research.project_id
+      - extensions.research.track_id
+      - extensions.research.state
+      - extensions.research.event.kind
+      - extensions.research.event.date
+      - extensions.research.event.sequence
+      - extensions.research.event.primary_direction
+      - extensions.research.event.directions.*
+      - extensions.research.sources.paths.*
+      - extensions.research.sources.cmd
+      - extensions.research.sources.notes
+      - extensions.research.links.*
+      - extensions.research.blockers.*
+      - extensions.research.next_actions.*
+      - extensions.research.confidence
+      # lean extension searchable paths
+      - extensions.lean.verification.status
+      - extensions.lean.verification.last_run_id
+
+  Patch:
+    description: "CFSE Patch (PATCH-*)"
+    properties:
+      id: { type: string, required: true, indexed: [exact, fulltext], normalize: [trim] }
+      title: { type: string, indexed: [fulltext], normalize: [trim] }
+      finding_ref: { type: object }
+      root_cause: { type: object }
+      fix_description: { type: string, indexed: [fulltext] }
+      code_changes: { type: array }
+      verification: { type: object }
+      related_invariants: { type: array }
+      status: { type: string, indexed: [exact], normalize: [trim] }
+      version: { type: string, indexed: [exact], normalize: [trim] }
+      body: { type: string }
+      md_bracket_refs: { type: array }
+      md_backtick_mentions: { type: array }
+    searchable: [_id, title, fix_description, body, md_bracket_refs.*, md_backtick_mentions.*]
+
+  Generator:
+    description: "CFSE Generator (GEN-*)"
+    properties:
+      id: { type: string, required: true, indexed: [exact, fulltext], normalize: [trim] }
+      name: { type: string, indexed: [fulltext], normalize: [trim] }
+      strategy: { type: string, indexed: [exact], normalize: [trim] }
+      template: { type: object }
+      variables: { type: array }
+      related: { type: array }
+      status: { type: string, indexed: [exact], normalize: [trim] }
+      body: { type: string }
+    searchable: [_id, name, body]
+
+  Projection:
+    description: "CFSE Projection (PRJ-*)"
+    properties:
+      id: { type: string, required: true, indexed: [exact, fulltext], normalize: [trim] }
+      title: { type: string, indexed: [fulltext], normalize: [trim] }
+      viewer_context: { type: object }
+      surfaces: { type: array }
+      assumptions: { type: object }
+      visible: { type: array }
+      status: { type: string, indexed: [exact], normalize: [trim] }
+      version: { type: string, indexed: [exact], normalize: [trim] }
+      body: { type: string }
+      md_bracket_refs: { type: array }
+      md_backtick_mentions: { type: array }
+    searchable: [_id, title, body, md_bracket_refs.*, md_backtick_mentions.*]
+
+  File:
+    description: "Code file node"
+    properties:
+      id: { type: string, required: true, indexed: [exact, fulltext], normalize: [trim] }
+      path: { type: string, required: true, indexed: [exact, fulltext], normalize: [trim] }
+    searchable: [_id, path]
+
+edges:
+  SUMMARY_OF_INVARIANT: { directed: true, allowed_from: [NldRunSummary], allowed_to: [Invariant] }
+  CLOSURE_OF_INVARIANT: { directed: true, allowed_from: [NldModelCheckClosure], allowed_to: [Invariant] }
+  REFERENCES_TRACE: { directed: true, allowed_from: [NldRunSummary, NldModelCheckMinimized, NldModelCheckClosure], allowed_to: [Trace] }
+
+  HAS_PRECONDITION: { directed: true, allowed_from: [Flow, FlowVariant], allowed_to: [FlowCondition] }
+  HAS_POSTCONDITION: { directed: true, allowed_from: [Flow, FlowVariant], allowed_to: [FlowCondition] }
+  CONDITION_ON_CONCEPT: { directed: true, allowed_from: [FlowCondition], allowed_to: [Concept] }
+  REQUIRES_STATE: { directed: true, allowed_from: [FlowCondition], allowed_to: [FlowState] }
+  ENSURES_STATE: { directed: true, allowed_from: [FlowCondition], allowed_to: [FlowState] }
+
+  HAS_STEP: { directed: true, allowed_from: [Flow, FlowVariant], allowed_to: [FlowStep] }
+  NEXT_STEP: { directed: true, allowed_from: [FlowStep], allowed_to: [FlowStep] }
+
+  HAS_VARIANT: { directed: true, allowed_from: [Flow], allowed_to: [FlowVariant] }
+  REPLACES_STEP: { directed: true, allowed_from: [FlowVariant], allowed_to: [FlowStep] }
+  INSERTS_BEFORE_STEP: { directed: true, allowed_from: [FlowVariant], allowed_to: [FlowStep] }
+  INSERTS_AFTER_STEP: { directed: true, allowed_from: [FlowVariant], allowed_to: [FlowStep] }
+
+  HAS_STATE_MAP: { directed: true, allowed_from: [Flow], allowed_to: [FlowStateMap] }
+  FOR_CONCEPT: { directed: true, allowed_from: [FlowStateMap, FlowState], allowed_to: [Concept] }
+  HAS_STATE: { directed: true, allowed_from: [FlowStateMap], allowed_to: [FlowState] }
+  HAS_TRANSITION: { directed: true, allowed_from: [FlowStateMap], allowed_to: [FlowStateTransition] }
+  FROM_STATE: { directed: true, allowed_from: [FlowStateTransition], allowed_to: [FlowState] }
+  TO_STATE: { directed: true, allowed_from: [FlowStateTransition], allowed_to: [FlowState] }
+  GUARDED_BY: { directed: true, allowed_from: [FlowStateTransition], allowed_to: [Invariant] }
+  TRIGGERED_BY_INTERACTION: { directed: true, allowed_from: [FlowStateTransition], allowed_to: [Interaction] }
+  TRIGGERED_BY_STEP: { directed: true, allowed_from: [FlowStateTransition], allowed_to: [FlowStep] }
+
+  USES_INTERACTION: { directed: true, allowed_from: [Flow, FlowStep], allowed_to: [Interaction] }
+  REQUIRES_INVARIANT: { directed: true, allowed_from: [Interaction, Flow, FlowVariant, FlowStep, FlowCondition], allowed_to: [Invariant] }
+  ENSURES_INVARIANT: { directed: true, allowed_from: [Interaction, Flow, FlowVariant, FlowStep, FlowCondition], allowed_to: [Invariant] }
+  COMPENSATED_BY: { directed: true, allowed_from: [FlowStep], allowed_to: [Interaction] }

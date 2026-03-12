@@ -1,0 +1,12 @@
+project_id: DEMO
+workspace: demo-autoresearch
+tracks:
+  - id: RT-LR-SWEEP
+    priority: HIGH
+    description: "Learning rate sweep for Shakespeare char-level model"
+  - id: RT-ARCH-DEPTH
+    priority: MED-HIGH
+    description: "Testing whether deeper models improve val_bpb at fixed compute"
+  - id: RT-DATA-AUG
+    priority: MED
+    description: "Data augmentation strategies for small corpus"
