@@ -174,3 +174,20 @@ primary_artifact: Finding
 ## License
 
 Same license as [CFSE](https://github.com/adi0x90/cfse).
+
+## Citation
+
+If you use `cfse-research` in your research, please cite it:
+
+```bibtex
+@software{gupta2026cfseresearch,
+  author  = {Gupta, Aditya},
+  title   = {cfse-research: research provenance extension for CFSE},
+  year    = {2026},
+  version = {0.1.0},
+  url     = {https://github.com/adi0x90/cfse-research-extension},
+  note    = {Attify}
+}
+```
+
+The repository includes a [CITATION.cff](CITATION.cff); GitHub renders a **Cite this repository** button from it.
