@@ -185,9 +185,10 @@ If you use `cfse-research` in your research, please cite it:
   title   = {cfse-research: research provenance extension for CFSE},
   year    = {2026},
   version = {0.1.0},
+  doi     = {10.5281/zenodo.24107194},
   url     = {https://github.com/adi0x90/cfse-research-extension},
   note    = {Attify}
 }
 ```
 
-The repository includes a [CITATION.cff](CITATION.cff); GitHub renders a **Cite this repository** button from it.
+The repository includes a [CITATION.cff](CITATION.cff); GitHub renders a **Cite this repository** button from it. The archived release has DOI [10.5281/zenodo.24107194](https://doi.org/10.5281/zenodo.24107194).
