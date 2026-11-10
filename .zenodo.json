@@ -1,0 +1,17 @@
+{
+  "title": "cfse-research: research provenance extension for CFSE",
+  "description": "A research provenance and progress tracking extension for CFSE. Tracks hypotheses, evidence, refutations, blockers, and session state as git-tracked markdown.",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "Apache-2.0",
+  "version": "0.1.0",
+  "publication_date": "2026-11-10",
+  "creators": [
+    {
+      "name": "Gupta, Aditya",
+      "affiliation": "Attify",
+      "orcid": "0009-0000-9899-483X"
+    }
+  ],
+  "keywords": ["research provenance", "CFSE", "methodology", "LLM agents", "provenance", "reproducibility"]
+}

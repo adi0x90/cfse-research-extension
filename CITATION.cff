@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+title: "cfse-research: research provenance extension for CFSE"
+message: "If you use cfse-research in your research, please cite this extension."
+type: software
+authors:
+  - given-names: "Aditya"
+    family-names: "Gupta"
+    affiliation: "Attify"
+    orcid: "https://orcid.org/0009-0000-9899-483X"
+version: "0.1.0"
+date-released: "2026-11-10"
+license: "Apache-2.0"
+repository-code: "https://github.com/adi0x90/cfse-research-extension"
+url: "https://github.com/adi0x90/cfse-research-extension"
+abstract: "A research provenance and progress tracking extension for CFSE. Tracks hypotheses, evidence, refutations, blockers, and session state as git-tracked markdown."
+keywords:
+  - research provenance
+  - CFSE
+  - methodology
+  - LLM agents
+  - provenance
+  - reproducibility
